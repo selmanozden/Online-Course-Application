@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}İletişim - Online Kurs Platformu{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">İletişim</h1>
+            <p class="lead">Sorularınız mı var? Sizden haber almaktan mutluluk duyarız!</p>
+            
+            <div class="row mt-5">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-envelope-fill text-primary fs-1"></i>
+                            <h5 class="card-title mt-3">E-posta Gönderin</h5>
+                            <p class="card-text">destek@onlinekurs.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-telephone-fill text-success fs-1"></i>
+                            <h5 class="card-title mt-3">Bizi Arayın</h5>
+                            <p class="card-text">+90 (555) 123-4567</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Bize Mesaj Gönderin</h5>
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Adınız</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-posta Adresiniz</label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="ornek@email.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Konu</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Mesajınız</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Mesaj Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Destek Saatleri:</strong> Pazartesi - Cuma, 09:00 - 18:00
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+            
+            <div class="row mt-5">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-envelope-fill text-primary fs-1"></i>
+                            <h5 class="card-title mt-3">Email Us</h5>
+                            <p class="card-text">support@onlinecourse.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-telephone-fill text-success fs-1"></i>
+                            <h5 class="card-title mt-3">Call Us</h5>
+                            <p class="card-text">+1 (555) 123-4567</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Send Us a Message</h5>
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Support Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM EST
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

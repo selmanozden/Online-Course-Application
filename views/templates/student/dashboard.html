@@ -1,4 +1,162 @@
 {% extends 'base.html' %}
+
+{% block title %}Öğrenci Paneli - Online Kurs Platformu{% endblock %}
+
 {% block content %}
-<h2>Student Dashboard</h2>
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3">
+                <i class="bi bi-speedometer2"></i> Hoş geldin, {{ user.first_name|default:user.username }}!
+            </h1>
+            <p class="text-muted">Öğrenme yolculuğuna devam et</p>
+        </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Kayıtlı Kurslar</h6>
+                            <h2 class="mb-0">{{ total_enrolled }}</h2>
+                        </div>
+                        <i class="bi bi-book fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Tamamlanan</h6>
+                            <h2 class="mb-0">{{ completed_courses }}</h2>
+                        </div>
+                        <i class="bi bi-check-circle fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Sertifikalar</h6>
+                            <h2 class="mb-0">{{ certificates_earned }}</h2>
+                        </div>
+                        <i class="bi bi-award fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Devam Eden</h6>
+                            <h2 class="mb-0">{{ total_enrolled|add:'-'|add:completed_courses }}</h2>
+                        </div>
+                        <i class="bi bi-hourglass-split fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Devam Eden Kurslar -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-play-circle"></i> Devam Eden Kurslar</h5>
+                </div>
+                <div class="card-body">
+                    {% if enrolled_courses %}
+                        {% for enrollment in enrolled_courses %}
+                        <div class="d-flex align-items-center mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                            {% if enrollment.course.thumbnail %}
+                                <img src="{{ enrollment.course.thumbnail.url }}" alt="{{ enrollment.course.title }}" class="rounded me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-primary rounded me-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <i class="bi bi-book text-white fs-2"></i>
+                                </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ enrollment.course.title }}</h6>
+                                <p class="text-muted small mb-2">
+                                    <i class="bi bi-person"></i> {{ enrollment.course.teacher.get_full_name|default:enrollment.course.teacher.username }}
+                                </p>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ enrollment.progress_percentage|default:0 }}%" 
+                                         aria-valuenow="{{ enrollment.progress_percentage|default:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <small class="text-muted">%{{ enrollment.progress_percentage|default:0 }} tamamlandı</small>
+                            </div>
+                            <a href="{% url 'course_content' enrollment.course.slug %}" class="btn btn-primary btn-sm ms-3">
+                                <i class="bi bi-play-fill"></i> Devam Et
+                            </a>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'enrolled_courses' %}" class="btn btn-outline-primary">
+                                Tüm Kursları Gör
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                            <p class="text-muted mt-3">Henüz kayıtlı kursunuz yok</p>
+                            <a href="{% url 'browse_courses' %}" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Kurs Keşfet
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Son Sınav Sonuçları -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-check"></i> Son Sınav Sonuçları</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_results %}
+                        {% for result in recent_results %}
+                        <div class="mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                            <h6 class="mb-1">{{ result.exam.title }}</h6>
+                            <p class="text-muted small mb-2">{{ result.exam.course.title }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge {% if result.passed %}bg-success{% else %}bg-danger{% endif %}">
+                                    %{{ result.score }}
+                                </span>
+                                <small class="text-muted">{{ result.submitted_at|date:"d.m.Y" }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'my_results' %}" class="btn btn-outline-primary btn-sm w-100">
+                                Tüm Sonuçlar
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-3">
+                            <i class="bi bi-clipboard-x text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2 mb-0">Henüz sınav sonucunuz yok</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,4 +1,131 @@
 {% extends 'base.html' %}
+
+{% block title %}Profilim - Online Kurs Platformu{% endblock %}
+
 {% block content %}
-<h2>Profile</h2>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <i class="bi bi-person-circle text-muted" style="font-size: 150px;"></i>
+                    {% endif %}
+                    <h4 class="mb-1">{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-muted mb-3">@{{ user.username }}</p>
+                    
+                    {% if user.role == 'STUDENT' %}
+                        <span class="badge bg-primary">Öğrenci</span>
+                    {% elif user.role == 'TEACHER' %}
+                        <span class="badge bg-success">Öğretmen</span>
+                    {% elif user.role == 'ADMIN' %}
+                        <span class="badge bg-danger">Admin</span>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p class="mb-2"><i class="bi bi-envelope"></i> {{ user.email }}</p>
+                        {% if user.phone_number %}
+                            <p class="mb-2"><i class="bi bi-telephone"></i> {{ user.phone_number }}</p>
+                        {% endif %}
+                        <p class="mb-2"><i class="bi bi-calendar"></i> Üyelik: {{ user.date_joined|date:"d.m.Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-gear"></i> Profil Bilgilerini Düzenle</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <h6 class="text-primary mb-3">Genel Bilgiler</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">Ad</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Soyad</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label">Telefon</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number|default:'' }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bio" class="form-label">Hakkımda</label>
+                            <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio|default:'' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Profil Fotoğrafı</label>
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+                            <small class="text-muted">JPG, PNG veya GIF formatında, maksimum 5MB</small>
+                        </div>
+                        
+                        {% if user.is_teacher %}
+                            <hr class="my-4">
+                            <h6 class="text-success mb-3">Öğretmen Bilgileri</h6>
+                            
+                            <div class="mb-3">
+                                <label for="expertise" class="form-label">Uzmanlık Alanları</label>
+                                <input type="text" class="form-control" id="expertise" name="expertise" value="{{ user.expertise|default:'' }}" placeholder="Örn: Web Geliştirme, Python, Django">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="qualification" class="form-label">Nitelikler ve Deneyim</label>
+                                <textarea class="form-control" id="qualification" name="qualification" rows="3" placeholder="Eğitim geçmişiniz ve profesyonel deneyimleriniz...">{{ user.qualification|default:'' }}</textarea>
+                            </div>
+                        {% elif user.is_student %}
+                            <hr class="my-4">
+                            <h6 class="text-primary mb-3">Öğrenci Bilgileri</h6>
+                            
+                            <div class="mb-3">
+                                <label for="education_level" class="form-label">Eğitim Seviyesi</label>
+                                <input type="text" class="form-control" id="education_level" name="education_level" value="{{ user.education_level|default:'' }}" placeholder="Örn: Üniversite, Lise">
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Şifre Değiştirme -->
+            <div class="card shadow mt-4">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="bi bi-shield-lock"></i> Güvenlik</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-3">Şifre Değiştir</h6>
+                    <p class="text-muted">Şifrenizi değiştirmek için aşağıdaki bağlantıyı kullanın:</p>
+                    <a href="{% url 'forgot_password' %}" class="btn btn-outline-warning">
+                        <i class="bi bi-key"></i> Şifre Değiştir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

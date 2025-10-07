@@ -1,18 +1,165 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Online Course App</title>
-  <link rel="stylesheet" href="/static/css/base.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Online Kurs Platformu - En iyi eğitmenlerden öğren{% endblock %}">
+    <title>{% block title %}Online Kurs Platformu{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-  <header>
-    <h1>Online Course Application</h1>
-  </header>
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-  <script src="/static/js/main.js"></script>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-mortarboard-fill"></i> Online Kurs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Ana Sayfa</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        {% if user.is_student %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'browse_courses' %}">Kursları Keşfet</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'enrolled_courses' %}">Kurslarım</a>
+                            </li>
+                        {% elif user.is_teacher %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'my_courses' %}">Kurslarım</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'students_list' %}">Öğrenciler</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">Hakkımızda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">İletişim</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% if user.is_student %}
+                                    <li><a class="dropdown-item" href="{% url 'student_dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i> Kontrol Paneli
+                                    </a></li>
+                                {% elif user.is_teacher %}
+                                    <li><a class="dropdown-item" href="{% url 'teacher_dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i> Kontrol Paneli
+                                    </a></li>
+                                {% elif user.is_admin %}
+                                    <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">
+                                        <i class="bi bi-gear"></i> Admin Paneli
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="/admin/">
+                                        <i class="bi bi-shield-lock"></i> Django Admin
+                                    </a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">
+                                    <i class="bi bi-person"></i> Profilim
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Çıkış Yap
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light ms-2" href="{% url 'register' %}">
+                                Kayıt Ol
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-mortarboard-fill"></i> Online Kurs</h5>
+                    <p>Dünyanın en iyi eğitmenlerinden öğrenin. Öğrenme yolculuğunuza bugün başlayın!</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Hızlı Bağlantılar</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-white-50">Ana Sayfa</a></li>
+                        <li><a href="{% url 'about' %}" class="text-white-50">Hakkımızda</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-white-50">İletişim</a></li>
+                        {% if user.is_authenticated and user.is_student %}
+                            <li><a href="{% url 'browse_courses' %}" class="text-white-50">Kurslar</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Bizi Takip Edin</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter fs-4"></i></a>
+                        <a href="#" class="text-white-50 me-3"><i class="bi bi-linkedin fs-4"></i></a>
+                        <a href="#" class="text-white-50"><i class="bi bi-youtube fs-4"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Online Kurs Platformu. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

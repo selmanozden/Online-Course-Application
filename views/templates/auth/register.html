@@ -1,5 +1,131 @@
 {% extends 'base.html' %}
+
+{% block title %}Kayıt Ol - Online Kurs Platformu{% endblock %}
+
 {% block content %}
-<h2>Register</h2>
-<form method="post">{% csrf_token %}<input name="username"><input name="email"><input name="password" type="password"><button>Register</button></form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-person-plus-fill text-primary" style="font-size: 4rem;"></i>
+                        <h2 class="mt-3">Kayıt Ol</h2>
+                        <p class="text-muted">Yeni hesap oluşturun</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Rol Seçimi -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Hesap Türü Seçin</label>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="role" id="role_student" value="STUDENT" checked>
+                                    <label class="btn btn-outline-primary w-100 py-3" for="role_student">
+                                        <i class="bi bi-person-fill fs-3 d-block mb-2"></i>
+                                        <strong>Öğrenci</strong>
+                                        <small class="d-block text-muted">Kursları takip et ve öğren</small>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="role" id="role_teacher" value="TEACHER">
+                                    <label class="btn btn-outline-success w-100 py-3" for="role_teacher">
+                                        <i class="bi bi-person-video3 fs-3 d-block mb-2"></i>
+                                        <strong>Öğretmen</strong>
+                                        <small class="d-block text-muted">Kurs oluştur ve öğret</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">Ad</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Soyad</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Kullanıcı Adı</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <small class="text-muted">Harfler, rakamlar ve @/./+/-/_ karakterleri kullanılabilir</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-posta</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Şifre</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password_confirm" class="form-label">Şifre Tekrar</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                <a href="#" class="text-decoration-none">Kullanım şartlarını</a> ve 
+                                <a href="#" class="text-decoration-none">gizlilik politikasını</a> kabul ediyorum
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-person-plus"></i> Kayıt Ol
+                        </button>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-0">
+                            Zaten hesabınız var mı? 
+                            <a href="{% url 'login' %}" class="text-decoration-none fw-bold">
+                                Giriş Yap
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Şifre eşleşme kontrolü
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password_confirm').value;
+    
+    if (password !== passwordConfirm) {
+        e.preventDefault();
+        alert('Şifreler eşleşmiyor!');
+    }
+});
+</script>
+{% endblock %}
 {% endblock %}

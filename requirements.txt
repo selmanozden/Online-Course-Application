@@ -1,1 +1,13 @@
 Django>=4.2
+
+# Additional packages for the Online Course Application
+Pillow==10.4.0  # For image processing
+djangorestframework==3.15.1  # For REST API endpoints
+reportlab==4.2.2  # For PDF certificate generation
+django-cors-headers==4.6.0  # For CORS support
+python-decouple==3.8  # For environment variables
+django-crispy-forms==2.3  # For better form rendering
+crispy-bootstrap5==2024.10  # Bootstrap 5 support for crispy forms
+django-filter==24.3  # For filtering querysets
+markdown==3.7  # For rich text content
+bleach==6.2.0  # For sanitizing HTML content
