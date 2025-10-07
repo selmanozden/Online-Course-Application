@@ -1,0 +1,12 @@
+/* basic styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 1rem;
+}
+
+header {
+    background: #222;
+    color: #fff;
+    padding: 1rem;
+}
